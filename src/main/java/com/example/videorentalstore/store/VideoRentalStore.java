@@ -17,6 +17,7 @@ public class VideoRentalStore {
     List<Member> members = new LinkedList<>();
     List<MemberVideoRental> memberVideoRentals = new LinkedList<>();
 
+
     public List<Video> findAllAvailableVideos() {
         List<Video> availableVideos = new LinkedList<>();
         for (Video video : videos) {
@@ -80,7 +81,6 @@ public class VideoRentalStore {
     }
 
 
-
     public void addMember(Member member) {
         members.add(member);
     }
@@ -93,5 +93,13 @@ public class VideoRentalStore {
         memberVideoRentals.add(memberVideoRental);
     }
 
+    public void completeMemberVideoRental(MemberVideoRental memberVideoRental) {
+        memberVideoRental.getVideo().setAvailable(true);
+        memberVideoRentals.remove(memberVideoRental);
+
+        if (LocalDate.now().isAfter(memberVideoRental.getDateOfReturn())) {
+            throw new RuntimeException("This video is late!");
+        }
+    }
 
 }

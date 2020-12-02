@@ -19,21 +19,32 @@ class VideoRentalStoreTest {
 
     private VideoDetail testVideoDetail;
 
+    private MemberVideoRental testMemberVideoRental;
+
+
+    private void setUpMasterTestData(VideoRentalStore videoRentalStore) {
+
+        setUpMemberTestData(videoRentalStore);
+
+        setUpVideoTestData(videoRentalStore);
+
+    }
+
     private void setUpMemberTestData(VideoRentalStore videoRentalStore) {
-        LocalDate dateOfBirthMember1 = LocalDate.of(1990, 4, 23);
+        LocalDate memberDateOfBirth = LocalDate.of(1990, 4, 23);
 
-        LocalDate membershipStartDateMember1 = LocalDate.of(2011, 12, 25);
+        LocalDate membershipStartDate = LocalDate.of(2011, 12, 25);
 
-        LocalDate membershipEndDateMember1 = LocalDate.of(2021, 12, 25);
+        LocalDate membershipEndDate = LocalDate.of(2021, 12, 25);
 
         testMember = new Member(1001, "Mr", "Testy", "Test",
                 "2 Test House", "Test Street", "Test Town", "XX10 XXX",
-                "07123456789", dateOfBirthMember1, membershipStartDateMember1, membershipEndDateMember1);
+                "07123456789", memberDateOfBirth, membershipStartDate, membershipEndDate);
 
         videoRentalStore.addMember(testMember);
     }
 
-    private void testSetUpVideoTestData(VideoRentalStore videoRentalStore) {
+    private void setUpVideoTestData(VideoRentalStore videoRentalStore) {
         testVideoDetail = new VideoDetail("Terminator", "James Cameron",
                 1984, "English", "Action", 108, 18);
 
@@ -42,9 +53,9 @@ class VideoRentalStoreTest {
         videoRentalStore.addVideo(testVideo);
     }
 
-    private void testSetUpMemberVideoRentalTestData(VideoRentalStore videoRentalStore) {
-        MemberVideoRental testMemberVideoRental = new MemberVideoRental(testMember, testVideo, LocalDate.now().minusDays(12),
-                10);
+    private void setUpMemberVideoRentalTestData(VideoRentalStore videoRentalStore) {
+        testMemberVideoRental = new MemberVideoRental(testMember, testVideo,
+                LocalDate.now().minusDays(12), 10);
 
         videoRentalStore.addMemberVideoRental(testMemberVideoRental);
     }
@@ -53,12 +64,11 @@ class VideoRentalStoreTest {
     void testFindAllAvailableVideos() {
         VideoRentalStore testVideoRentalStore = new VideoRentalStore();
 
-        testSetUpVideoTestData(testVideoRentalStore);
+        setUpMasterTestData(testVideoRentalStore);
 
         List<Video> allAvailableVideos = testVideoRentalStore.findAllAvailableVideos();
 
         assertThat(allAvailableVideos.get(0)).isEqualTo(testVideo);
-
 
     }
 
@@ -66,12 +76,11 @@ class VideoRentalStoreTest {
     void testFindAllMembers() {
         VideoRentalStore testVideoRentalStore = new VideoRentalStore();
 
-        setUpMemberTestData(testVideoRentalStore);
+        setUpMasterTestData(testVideoRentalStore);
 
         List<Member> allMembers = testVideoRentalStore.findAllMembers();
 
         assertThat(allMembers.get(0)).isEqualTo(testMember);
-
 
     }
 
@@ -79,7 +88,7 @@ class VideoRentalStoreTest {
     void testFindVideosWithCertainWordInMovieTitle() {
         VideoRentalStore testVideoRentalStore = new VideoRentalStore();
 
-        testSetUpVideoTestData(testVideoRentalStore);
+        setUpMasterTestData(testVideoRentalStore);
 
         List<Video> searchResults = testVideoRentalStore.findVideosWithCertainWordInMovieTitle("terminator");
 
@@ -90,7 +99,7 @@ class VideoRentalStoreTest {
     void testFindVideosByGenre() {
         VideoRentalStore testVideoRentalStore = new VideoRentalStore();
 
-        testSetUpVideoTestData(testVideoRentalStore);
+        setUpMasterTestData(testVideoRentalStore);
 
         List<Video> genreSearchResultsAction = testVideoRentalStore.findVideosByGenre("action");
 
@@ -102,7 +111,7 @@ class VideoRentalStoreTest {
     void testNoVideosFoundWithMatchingGenre() {
         VideoRentalStore testVideoRentalStore = new VideoRentalStore();
 
-        testSetUpVideoTestData(testVideoRentalStore);
+        setUpMasterTestData(testVideoRentalStore);
 
         List<Video> genreSearchResultsComedy = testVideoRentalStore.findVideosByGenre("comedy");
 
@@ -113,11 +122,9 @@ class VideoRentalStoreTest {
     void testFindOverdueRentals() {
         VideoRentalStore testVideoRentalStore = new VideoRentalStore();
 
-        testSetUpVideoTestData(testVideoRentalStore);
+        setUpMasterTestData(testVideoRentalStore);
 
-        setUpMemberTestData(testVideoRentalStore);
-
-        testSetUpMemberVideoRentalTestData(testVideoRentalStore);
+        setUpMemberVideoRentalTestData(testVideoRentalStore);
 
         List<MemberVideoRental> testOverdueRentals = testVideoRentalStore.findOverdueRentals();
 
@@ -125,14 +132,20 @@ class VideoRentalStoreTest {
     }
 
     @Test
-    void addMember() {
-    }
+    void testCompleteMemberVideoRental() {
 
-    @Test
-    void addVideo() {
-    }
+        VideoRentalStore testVideoRentalStore = new VideoRentalStore();
 
-    @Test
-    void addMemberVideoRental() {
+        setUpMasterTestData(testVideoRentalStore);
+
+        setUpMemberVideoRentalTestData(testVideoRentalStore);
+
+        try {
+            testVideoRentalStore.completeMemberVideoRental(testMemberVideoRental);
+            fail("Expected exception was not thrown");
+        } catch (RuntimeException e) {
+            assertThat(e.getMessage()).isEqualTo("This video is late!");
+        }
+
     }
 }

@@ -32,24 +32,37 @@ public class VideoRentalStoreApplication {
         videoRentalStore.addVideo(newVideo);
 
 
+
         /* Create new object of Video and search for a specific word within the movie title available in list of Videos
         Also, if there are multiple videos of the same movie, this picks just the first one
         rather than returning them all
          */
-        Video rentFirstVideoInStore =
-                videoRentalStore.findVideosWithCertainWordInMovieTitle("Terminator").get(0);
+//        Video rentFirstVideoInStore =
+//                videoRentalStore.findVideosWithCertainWordInMovieTitle("Terminator").get(0);
 
-        Video findFirstActionMovieInStore =
-                videoRentalStore.findVideosByGenre("action").get(0);
+        /*
+        Uses hardcoded member and video details from above and sets them along with a rental date and days rented for
+        Uncomment line below to test list of videos containing search word
+         */
+//        MemberVideoRental memberVideoRental = memberVideoRentalDetails(newMember, rentFirstVideoInStore);
+
+
+
+
+        /* Create new object of Video and search for a specific genre available in list of Videos
+        Also, if there are multiple videos of the same movie, this picks just the first one
+        rather than returning them all
+         */
+        Video findFirstActionMovieInStore = videoRentalStore.findVideosByGenre("action").get(0);
+
+        /*
+        Uses hardcoded member and video details from above and sets them along with a rental date and days rented for
+         */
+        MemberVideoRental memberVideoRental = memberVideoRentalDetails(newMember, findFirstActionMovieInStore);
+
 
 //        List<Video> availableVideos = videoRentalStore.findAllAvailableVideos();
 //        MemberVideoRental memberVideoRental = memberVideoRentalDetails(newMember, (Video) availableVideos);
-
-
-        // Uses hardcoded member and video details from above and sets them along with a rental date and days rented for
-//        MemberVideoRental memberVideoRental = memberVideoRentalDetails(newMember, rentFirstVideoInStore);
-        MemberVideoRental memberVideoRental = memberVideoRentalDetails(newMember, findFirstActionMovieInStore);
-
 
         // Adds hardcoded rental details from above to MemberVideoRental list
         videoRentalStore.addMemberVideoRental(memberVideoRental);
@@ -108,16 +121,16 @@ public class VideoRentalStoreApplication {
 
     private static Member memberDetails() {
 
-        LocalDate dateOfBirthMember1 = LocalDate.of(1990, 4, 23);
+        LocalDate memberDateOfBirth = LocalDate.of(1990, 4, 23);
 
-        LocalDate membershipStartDateMember1 = LocalDate.of(2011, 12, 25);
+        LocalDate membershipStartDate = LocalDate.of(2011, 12, 25);
 
-        LocalDate membershipEndDateMember1 = LocalDate.of(2021, 12, 25);
+        LocalDate membershipEndDate = LocalDate.of(2021, 12, 25);
 
 
         return new Member(1001, "Mr", "Testy", "Test",
                 "2 Test House", "Test Street", "Test Town", "XX10 XXX",
-                "07123456789", dateOfBirthMember1, membershipStartDateMember1, membershipEndDateMember1);
+                "07123456789", memberDateOfBirth, membershipStartDate, membershipEndDate);
 
 
     }

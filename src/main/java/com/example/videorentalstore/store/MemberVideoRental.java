@@ -19,11 +19,12 @@ public class MemberVideoRental {
         this.video = video;
         this.dateOfRental = dateOfRental;
         this.daysRentedFor = daysRentedFor;
-        checkIfCustomerIsOldEnough();
+        checkIfCustomerIsOldEnoughToRentMovie();
+        checkThatMembershipIsInDate();
         video.setAvailable(false);
     }
 
-    private void checkIfCustomerIsOldEnough() {
+    private void checkIfCustomerIsOldEnoughToRentMovie() {
 
         Period period = Period.between(member.getDateOfBirth(), LocalDate.now());
 
@@ -34,6 +35,10 @@ public class MemberVideoRental {
 
     private void checkThatMembershipIsInDate() {
 
+        if (LocalDate.now().isAfter(member.getMembershipEndDate())) {
+            throw new RuntimeException("Your membership has expired!");
+
+        }
     }
 
 
